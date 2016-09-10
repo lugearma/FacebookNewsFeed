@@ -40,7 +40,7 @@ class FeedController: UICollectionViewController {
 extension FeedController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 300)
+        return CGSize(width: view.frame.width, height: 400)
     }
     
 }
@@ -64,7 +64,7 @@ class FeedCell: UICollectionViewCell {
         
         let attributedText = NSMutableAttributedString(string: "Leo Galante", attributes: [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)])
         
-        attributedText.appendAttributedString(NSAttributedString(string: "\nDecember 18 • Mexico City • ", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSForegroundColorAttributeName: UIColor(red: 149/255, green: 165/255, blue: 166/255, alpha: 1.0)]))
+        attributedText.appendAttributedString(NSAttributedString(string: "\nDecember 18 • Mexico City • ", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSForegroundColorAttributeName: UIColor.rgb(149, green: 165, blue: 166)]))
         
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 4
@@ -92,6 +92,26 @@ class FeedCell: UICollectionViewCell {
         return textView
     }()
     
+    let likesCommentsLabel: UILabel = {
+        
+        let label = UILabel()
+        
+        label.text = "456 likes  10.4K Comments"
+        label.font = UIFont.systemFontOfSize(12)
+        label.textColor = UIColor.rgb(155, green: 161, blue: 171)
+        
+        return label
+    }()
+    
+    let dividerLineView:UIView = {
+        let view = UIView()
+        
+        view.backgroundColor = UIColor.rgb(233, green: 228, blue: 232)
+        
+        return view
+    }()
+    
+    
     let profileImageView: UIImageView = {
         
         let imageView = UIImageView()
@@ -114,6 +134,24 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }()
     
+    let likeButton = FeedCell.buttonForTitle("Like", imageName: "like")
+    let commentButton = FeedCell.buttonForTitle("Comment", imageName: "comment")
+    let shareButton = FeedCell.buttonForTitle("Share", imageName: "share")
+    
+    static func buttonForTitle(title: String, imageName: String) -> UIButton {
+        
+        let button = UIButton()
+        
+        button.setTitle(title, forState: .Normal)
+        button.setTitleColor(UIColor.rgb(155, green: 161, blue: 171), forState: .Normal)
+        button.setImage(UIImage(named: imageName), forState: .Normal)
+        button.titleLabel?.font = UIFont.boldSystemFontOfSize(14)
+        button.titleEdgeInsets = UIEdgeInsetsMake(0.0, 8.0, 0.0, 0.0)
+        
+        return button
+        
+    }
+    
     func setupViews() {
         backgroundColor = UIColor.whiteColor()
         
@@ -121,14 +159,38 @@ class FeedCell: UICollectionViewCell {
         addSubview(profileImageView)
         addSubview(statusTextView)
         addSubview(statusImageView)
+        addSubview(likesCommentsLabel)
+        addSubview(dividerLineView)
+        addSubview(likeButton)
+        addSubview(commentButton)
+        addSubview(shareButton)
         
+        //Horinzontal constraints
         addConstraintsWithFormat("H:|-8-[v0(44)]-8-[v1]|", view: profileImageView, nameLabel)
         addConstraintsWithFormat("H:|[v0]|", view: statusTextView)
         addConstraintsWithFormat("H:|[v0]|", view: statusImageView)
+        addConstraintsWithFormat("H:|-12-[v0]|", view: likesCommentsLabel)
+        addConstraintsWithFormat("H:|-12-[v0]-12-|", view: dividerLineView)
+        
+        //Button constraints
+        addConstraintsWithFormat("H:|[v0(v2)][v1(v2)][v2]|", view: likeButton, commentButton, shareButton)
+        
+        
+        //Vertical constraints
         addConstraintsWithFormat("V:|-8-[v0]", view: nameLabel)
-        addConstraintsWithFormat("V:|-8-[v0(44)]-4-[v1(30)]-4-[v2]|", view: profileImageView, statusTextView, statusImageView)
+        addConstraintsWithFormat("V:|-8-[v0(44)]-4-[v1(30)]-4-[v2]-8-[v3(24)]-8-[v4(0.4)][v5(44)]|", view: profileImageView, statusTextView, statusImageView, likesCommentsLabel, dividerLineView, likeButton, commentButton)
+        addConstraintsWithFormat("V:[v0(44)]|", view: commentButton)
+        addConstraintsWithFormat("V:[v0(44)]|", view: shareButton)
         
     }
+}
+
+extension UIColor {
+    
+    static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
+        return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1.0)
+    }
+    
 }
 
 extension UIView {
