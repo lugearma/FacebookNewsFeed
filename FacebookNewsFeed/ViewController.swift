@@ -69,6 +69,7 @@ class FeedCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .ScaleAspectFit
         imageView.backgroundColor = UIColor.redColor()
+        imageView.image = UIImage(named: "img6")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
