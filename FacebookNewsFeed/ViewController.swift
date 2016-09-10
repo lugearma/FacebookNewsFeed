@@ -82,6 +82,16 @@ class FeedCell: UICollectionViewCell {
         return label
     }()
     
+    let statusTextView: UITextView = {
+        
+        let textView = UITextView()
+        
+        textView.text = "Yo aqui con toda la hueva del mundo :p"
+        textView.font = UIFont.systemFontOfSize(14)
+        
+        return textView
+    }()
+    
     let profileImageView: UIImageView = {
         
         let imageView = UIImageView()
@@ -93,15 +103,30 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }()
     
+    let statusImageView: UIImageView = {
+        
+        let imageView = UIImageView()
+        
+        imageView.image = UIImage(named: "post1")
+        imageView.contentMode = .ScaleAspectFit
+        
+        return imageView
+    }()
+    
     func setupViews() {
         backgroundColor = UIColor.whiteColor()
         
         addSubview(nameLabel)
         addSubview(profileImageView)
+        addSubview(statusTextView)
+        addSubview(statusImageView)
         
         addConstraintsWithFormat("H:|-8-[v0(44)]-8-[v1]|", view: profileImageView, nameLabel)
+        addConstraintsWithFormat("H:|[v0]|", view: statusTextView)
+        addConstraintsWithFormat("H:|-8-[v0]-8-|", view: statusImageView)
         addConstraintsWithFormat("V:|-8-[v0]", view: nameLabel)
-        addConstraintsWithFormat("V:|-8-[v0(44)]", view: profileImageView)
+        addConstraintsWithFormat("V:|-8-[v0(44)]-4-[v1(30)]-4-[v2(100)]", view: profileImageView, statusTextView, statusImageView)
+        
     }
 }
 
