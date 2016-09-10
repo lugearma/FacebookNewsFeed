@@ -40,7 +40,7 @@ class FeedController: UICollectionViewController {
 extension FeedController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 60)
+        return CGSize(width: view.frame.width, height: 200)
     }
     
 }
@@ -58,19 +58,38 @@ class FeedCell: UICollectionViewCell {
     }
     
     let nameLabel: UILabel = {
+        
         let label = UILabel()
-        label.text = "Sample Name"
-        label.font = UIFont.boldSystemFontOfSize(14)
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 2
+        
+        let attributedText = NSMutableAttributedString(string: "Leo Galante", attributes: [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)])
+        
+        attributedText.appendAttributedString(NSAttributedString(string: "\nDecember 18 • Ciudad de Mexico • ", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSForegroundColorAttributeName: UIColor(red: 149/255, green: 165/255, blue: 166/255, alpha: 1.0)]))
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 4
+        
+        attributedText.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSMakeRange(0, attributedText.string.characters.count))
+        
+        let attachment = NSTextAttachment()
+        attachment.image = UIImage(named: "world")
+        attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
+        
+        attributedText.appendAttributedString(NSAttributedString(attachment: attachment))
+        
+        label.attributedText = attributedText
+        
         return label
     }()
     
     let profileImageView: UIImageView = {
+        
         let imageView = UIImageView()
+        
         imageView.contentMode = .ScaleAspectFit
         imageView.backgroundColor = UIColor.redColor()
         imageView.image = UIImage(named: "img6")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
         return imageView
     }()
     
@@ -81,7 +100,7 @@ class FeedCell: UICollectionViewCell {
         addSubview(profileImageView)
         
         addConstraintsWithFormat("H:|-8-[v0(44)]-8-[v1]|", view: profileImageView, nameLabel)
-        addConstraintsWithFormat("V:|[v0]|", view: nameLabel)
+        addConstraintsWithFormat("V:|-8-[v0]", view: nameLabel)
         addConstraintsWithFormat("V:|-8-[v0(44)]", view: profileImageView)
     }
 }
