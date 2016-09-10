@@ -40,7 +40,7 @@ class FeedController: UICollectionViewController {
 extension FeedController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 200)
+        return CGSize(width: view.frame.width, height: 300)
     }
     
 }
@@ -64,7 +64,7 @@ class FeedCell: UICollectionViewCell {
         
         let attributedText = NSMutableAttributedString(string: "Leo Galante", attributes: [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)])
         
-        attributedText.appendAttributedString(NSAttributedString(string: "\nDecember 18 • Ciudad de Mexico • ", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSForegroundColorAttributeName: UIColor(red: 149/255, green: 165/255, blue: 166/255, alpha: 1.0)]))
+        attributedText.appendAttributedString(NSAttributedString(string: "\nDecember 18 • Mexico City • ", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSForegroundColorAttributeName: UIColor(red: 149/255, green: 165/255, blue: 166/255, alpha: 1.0)]))
         
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 4
@@ -108,7 +108,8 @@ class FeedCell: UICollectionViewCell {
         let imageView = UIImageView()
         
         imageView.image = UIImage(named: "post1")
-        imageView.contentMode = .ScaleAspectFit
+        imageView.contentMode = .ScaleAspectFill
+        imageView.layer.masksToBounds = true
         
         return imageView
     }()
@@ -123,9 +124,9 @@ class FeedCell: UICollectionViewCell {
         
         addConstraintsWithFormat("H:|-8-[v0(44)]-8-[v1]|", view: profileImageView, nameLabel)
         addConstraintsWithFormat("H:|[v0]|", view: statusTextView)
-        addConstraintsWithFormat("H:|-8-[v0]-8-|", view: statusImageView)
+        addConstraintsWithFormat("H:|[v0]|", view: statusImageView)
         addConstraintsWithFormat("V:|-8-[v0]", view: nameLabel)
-        addConstraintsWithFormat("V:|-8-[v0(44)]-4-[v1(30)]-4-[v2(100)]", view: profileImageView, statusTextView, statusImageView)
+        addConstraintsWithFormat("V:|-8-[v0(44)]-4-[v1(30)]-4-[v2]|", view: profileImageView, statusTextView, statusImageView)
         
     }
 }
