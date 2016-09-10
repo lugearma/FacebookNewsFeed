@@ -79,12 +79,28 @@ class FeedCell: UICollectionViewCell {
         addSubview(nameLabel)
         addSubview(profileImageView)
         
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-8-[v0(44)]-8-[v1]|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": profileImageView, "v1": nameLabel]))
-        
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[v0]|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": nameLabel]))
-        
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-8-[v0(44)]|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": profileImageView]))
+        addConstraintsWithFormat("H:|-8-[v0(44)]-8-[v1]|", view: profileImageView, nameLabel)
+        addConstraintsWithFormat("V:|[v0]|", view: nameLabel)
+        addConstraintsWithFormat("V:|-8-[v0(44)]", view: profileImageView)
     }
+}
+
+extension UIView {
+    
+    func addConstraintsWithFormat(format: String, view: UIView...) {
+        
+        var viewDictionary = [String: UIView]()
+        
+        for (index, view) in view.enumerate() {
+            let key = "v\(index)"
+            viewDictionary[key] = view
+            view.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(format, options: NSLayoutFormatOptions(), metrics: nil, views: viewDictionary))
+        
+    }
+    
 }
 
 
