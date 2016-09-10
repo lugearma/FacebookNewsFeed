@@ -13,6 +13,8 @@ class FeedController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationItem.title = "Facebook Feed"
+        
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
     }
 }
