@@ -10,12 +10,22 @@ import UIKit
 
 let cellId = "cellId"
 
+struct Post {
+    var name: String?
+}
+
 class FeedController: UICollectionViewController {
     
-    var items = ["Item1", "Item1", "Item1"]
+    var posts = [Post]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let postMark = Post(name: "Mark Zuckerberg")
+        let postJobs = Post(name: "Steve Jobs")
+        
+        posts.append(postMark)
+        posts.append(postJobs)
 
         self.navigationItem.title = "Facebook Feed"
 
@@ -26,14 +36,18 @@ class FeedController: UICollectionViewController {
     
     //MARK: UICollectionViewDelegate methods
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return items.count
+        return posts.count
     }
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellId, forIndexPath: indexPath) as! FeedCell
 
-        return cell
+        let feedCell = collectionView.dequeueReusableCellWithReuseIdentifier(cellId, forIndexPath: indexPath) as! FeedCell
+
+        if let name = posts[indexPath.item].name {
+            feedCell.nameLabel.text = name
+        }
+        
+        return feedCell
     }
 }
 
@@ -41,6 +55,12 @@ extension FeedController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: 400)
+    }
+    
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+        
+        collectionView?.collectionViewLayout.invalidateLayout()
     }
     
 }
