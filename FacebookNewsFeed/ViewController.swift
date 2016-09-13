@@ -10,19 +10,25 @@ import UIKit
 
 let cellId = "cellId"
 
-struct Post {
+protocol Post {
+    var name: String? {get set}
+    var status: String? {get set}
+}
+
+struct BasicPost: Post {
     var name: String?
+    var status: String?
 }
 
 class FeedController: UICollectionViewController {
     
-    var posts = [Post]()
+    var posts = [BasicPost]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let postMark = Post(name: "Mark Zuckerberg")
-        let postJobs = Post(name: "Steve Jobs")
+        let postMark = BasicPost(name: "Mark Zuckerberg", status: "Estoy conectando al mundo para hacer de este mundo un lugar mejor y mas feliz :p")
+        let postJobs = BasicPost(name: "Steve Jobs", status: "Hola el dieño este sera un texto largo de pruba, asi que si quieres saber que es lo que pasa quedate con nosotros y nosotros podremos ayudarte a escoger mejor que puedes hacer de esta manera tu ya no...")
         
         posts.append(postMark)
         posts.append(postJobs)
@@ -43,9 +49,7 @@ class FeedController: UICollectionViewController {
 
         let feedCell = collectionView.dequeueReusableCellWithReuseIdentifier(cellId, forIndexPath: indexPath) as! FeedCell
 
-        if let name = posts[indexPath.item].name {
-            feedCell.nameLabel.text = name
-        }
+        feedCell.post = posts[indexPath.item]
         
         return feedCell
     }
@@ -67,6 +71,35 @@ extension FeedController: UICollectionViewDelegateFlowLayout {
 
 class FeedCell: UICollectionViewCell {
     
+    var post: BasicPost? {
+        didSet {
+            
+            if let name = post!.name {
+                let attributedText = NSMutableAttributedString(string: name, attributes: [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)])
+                
+                attributedText.appendAttributedString(NSAttributedString(string: "\nDecember 18 • Mexico City • ", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSForegroundColorAttributeName: UIColor.rgb(149, green: 165, blue: 166)]))
+                
+                let paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.lineSpacing = 4
+                
+                attributedText.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSMakeRange(0, attributedText.string.characters.count))
+                
+                let attachment = NSTextAttachment()
+                attachment.image = UIImage(named: "world")
+                attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
+                
+                attributedText.appendAttributedString(NSAttributedString(attachment: attachment))
+                
+                nameLabel.attributedText = attributedText
+            }
+            
+            if let status = post!.status {
+                statusTextView.text = status
+            }
+        }
+        
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -82,31 +115,12 @@ class FeedCell: UICollectionViewCell {
         let label = UILabel()
         label.numberOfLines = 2
         
-        let attributedText = NSMutableAttributedString(string: "Leo Galante", attributes: [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)])
-        
-        attributedText.appendAttributedString(NSAttributedString(string: "\nDecember 18 • Mexico City • ", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSForegroundColorAttributeName: UIColor.rgb(149, green: 165, blue: 166)]))
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 4
-        
-        attributedText.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSMakeRange(0, attributedText.string.characters.count))
-        
-        let attachment = NSTextAttachment()
-        attachment.image = UIImage(named: "world")
-        attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
-        
-        attributedText.appendAttributedString(NSAttributedString(attachment: attachment))
-        
-        label.attributedText = attributedText
-        
         return label
     }()
     
     let statusTextView: UITextView = {
         
         let textView = UITextView()
-        
-        textView.text = "Yo aqui con toda la hueva del mundo :p"
         textView.font = UIFont.systemFontOfSize(14)
         
         return textView
@@ -198,7 +212,7 @@ class FeedCell: UICollectionViewCell {
         
         //Vertical constraints
         addConstraintsWithFormat("V:|-8-[v0]", view: nameLabel)
-        addConstraintsWithFormat("V:|-8-[v0(44)]-4-[v1(30)]-4-[v2]-8-[v3(24)]-8-[v4(0.4)][v5(44)]|", view: profileImageView, statusTextView, statusImageView, likesCommentsLabel, dividerLineView, likeButton, commentButton)
+        addConstraintsWithFormat("V:|-8-[v0(44)]-4-[v1]-4-[v2(200)]-8-[v3(24)]-8-[v4(0.4)][v5(44)]|", view: profileImageView, statusTextView, statusImageView, likesCommentsLabel, dividerLineView, likeButton, commentButton)
         addConstraintsWithFormat("V:[v0(44)]|", view: commentButton)
         addConstraintsWithFormat("V:[v0(44)]|", view: shareButton)
         
