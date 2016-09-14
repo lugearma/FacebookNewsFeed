@@ -13,11 +13,23 @@ let cellId = "cellId"
 protocol Post {
     var name: String? {get set}
     var status: String? {get set}
+    var statusImage: UIImage? {get set}
+    var profileImage: UIImage? {get set}
+    var location: String? {get set}
+    var numLikes: Int? {get set}
+    var numComments: Int? {get set}
+    var date: String? {get set}
 }
 
 struct BasicPost: Post {
     var name: String?
     var status: String?
+    var statusImage: UIImage?
+    var profileImage: UIImage?
+    var location: String?
+    var numLikes: Int?
+    var numComments: Int?
+    var date: String?
 }
 
 class FeedController: UICollectionViewController {
@@ -27,11 +39,15 @@ class FeedController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let postMark = BasicPost(name: "Mark Zuckerberg", status: "Estoy conectando al mundo para hacer de este mundo un lugar mejor y mas feliz :p")
-        let postJobs = BasicPost(name: "Steve Jobs", status: "Hola el dieño este sera un texto largo de pruba, asi que si quieres saber que es lo que pasa quedate con nosotros y nosotros podremos ayudarte a escoger mejor que puedes hacer de esta manera tu ya no...")
+        let postMark = BasicPost(name: "Leo Galante", status: "Mi gato al parecer luce algo asustado, que le habra pasado??", statusImage: UIImage(named: "post1"), profileImage: UIImage(named: "img6"), location: "Mexico city", numLikes: 2345, numComments: 3543, date: "Yesterday at 8:00 pm")
+        
+        let postJobs = BasicPost(name: "Steve Jobs", status: "Hola el dieño este sera un texto largo de pruba, asi que si quieres saber que es lo que pasa quedate con nosotros y nosotros podremos ayudarte a escoger mejor que puedes hacer de esta manera tu ya no...", statusImage: UIImage(named: "steve_status"), profileImage: UIImage(named: "steve"), location: "Palo alto", numLikes: 463, numComments: 35, date: "5 min")
+        
+        let postGhandi = BasicPost(name: "Ghandi", status: "La paz no es el fin, es el camino, si queires cambiar al mundo, cambiar primero tu debes", statusImage: UIImage(named: "gandhi_status"), profileImage: UIImage(named: "ghandi"), location: "Nueva Dheli", numLikes: 675, numComments: 45, date: "1 hr")
         
         posts.append(postMark)
         posts.append(postJobs)
+        posts.append(postGhandi)
 
         self.navigationItem.title = "Facebook Feed"
 
@@ -58,6 +74,16 @@ class FeedController: UICollectionViewController {
 extension FeedController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        
+        if let status = posts[indexPath.item].status {
+        
+            let rect = NSString(string: status).boundingRectWithSize(CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.UsesFontLeading.union(NSStringDrawingOptions.UsesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFontOfSize(14)], context: nil)
+            
+            let knowHeight: CGFloat = 8 + 44 + 4 + 4 + 200 + 8 + 24 + 8 + 44
+            
+            return CGSizeMake(view.frame.width, rect.height + knowHeight + 24)
+        }
+        
         return CGSize(width: view.frame.width, height: 400)
     }
     
@@ -74,10 +100,10 @@ class FeedCell: UICollectionViewCell {
     var post: BasicPost? {
         didSet {
             
-            if let name = post!.name {
-                let attributedText = NSMutableAttributedString(string: name, attributes: [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)])
+            if let post = post {
+                let attributedText = NSMutableAttributedString(string: post.name!, attributes: [NSFontAttributeName: UIFont.boldSystemFontOfSize(14)])
                 
-                attributedText.appendAttributedString(NSAttributedString(string: "\nDecember 18 • Mexico City • ", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSForegroundColorAttributeName: UIColor.rgb(149, green: 165, blue: 166)]))
+                attributedText.appendAttributedString(NSAttributedString(string: "\n\(post.date!) • \(post.location!) • ", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSForegroundColorAttributeName: UIColor.rgb(149, green: 165, blue: 166)]))
                 
                 let paragraphStyle = NSMutableParagraphStyle()
                 paragraphStyle.lineSpacing = 4
@@ -95,6 +121,24 @@ class FeedCell: UICollectionViewCell {
             
             if let status = post!.status {
                 statusTextView.text = status
+            }
+            
+            if let statusImage = post!.statusImage {
+                statusImageView.image = statusImage
+            }
+            
+            if let profileImage = post!.profileImage {
+                profileImageView.image = profileImage
+            }
+            
+            if let likesAndCommetsLabel = post {
+                if let likes = likesAndCommetsLabel.numLikes {
+                    likesCommentsLabel.text = NSString(string: "\(String(likes)) likes  ") as String
+                }
+                
+                if let comments = likesAndCommetsLabel.numComments {
+                    likesCommentsLabel.text?.appendContentsOf("\(String(comments))K Comments")
+                }
             }
         }
         
@@ -122,6 +166,8 @@ class FeedCell: UICollectionViewCell {
         
         let textView = UITextView()
         textView.font = UIFont.systemFontOfSize(14)
+        textView.scrollEnabled = false
+        textView.editable = false
         
         return textView
     }()
@@ -130,7 +176,6 @@ class FeedCell: UICollectionViewCell {
         
         let label = UILabel()
         
-        label.text = "456 likes  10.4K Comments"
         label.font = UIFont.systemFontOfSize(12)
         label.textColor = UIColor.rgb(155, green: 161, blue: 171)
         
@@ -150,9 +195,9 @@ class FeedCell: UICollectionViewCell {
         
         let imageView = UIImageView()
         
-        imageView.contentMode = .ScaleAspectFit
         imageView.backgroundColor = UIColor.redColor()
-        imageView.image = UIImage(named: "img6")
+        imageView.contentMode = .ScaleAspectFill
+        imageView.layer.masksToBounds = true
         
         return imageView
     }()
@@ -161,7 +206,6 @@ class FeedCell: UICollectionViewCell {
         
         let imageView = UIImageView()
         
-        imageView.image = UIImage(named: "post1")
         imageView.contentMode = .ScaleAspectFill
         imageView.layer.masksToBounds = true
         
@@ -208,7 +252,6 @@ class FeedCell: UICollectionViewCell {
         
         //Button constraints
         addConstraintsWithFormat("H:|[v0(v2)][v1(v2)][v2]|", view: likeButton, commentButton, shareButton)
-        
         
         //Vertical constraints
         addConstraintsWithFormat("V:|-8-[v0]", view: nameLabel)
